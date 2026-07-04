@@ -2,9 +2,9 @@
 
 This repo contains all the agentic workflows created in n8n.
 
-Project 1 : Customer Routing Agent 
+Project 1: BankCo Premium Routing Agent 
 
-Project 2: BankCo Premium Routing Agent 
+Project 2 : Customer Routing Agent and ECommerce Operations Agent
 
 
 Project 3:
