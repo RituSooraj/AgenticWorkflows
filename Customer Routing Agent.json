@@ -1,0 +1,396 @@
+{
+  "name": "Customer Routing Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -640,
+        -96
+      ],
+      "id": "539d7275-2381-449b-8cff-65e77052dcf5",
+      "name": "Chat Input",
+      "webhookId": "e84ccad8-3ad2-4f97-97ce-0e54fea40b38"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an customer query routing agent.Your job is to receive the query from customer and route it to correct google sheet based on the tools which are available to you and routing logic explained below.\n\n\nCustomer Query: {{ $json.chatInput }}\n\nIf a query is general greeting, then respond back with the list of available options that customer can interact with.\nAdd Every response to memory and check if the query can be answered from memory also.\n\n\nRouting Logic:\n1. If a query is about some issue or some concerns related to any product, it should be routed to Support Sheet.\n2. If a query is about interest in some of product or customer wants to know more about any product, it should be routed to Demo Sheet.\n3. If the query does not belong to any of the category above, it should be routed to Spam Sheet.\n\n\nTools Available:\n1.Support Tool: This tool enables in appending rows in Support Sheet\n2.Demo Tool: This tool enables in appending rows in Demo Sheet\n3.Spam Tool: This tool enables in appending rows in Spam Sheet\n\nOutput:\nOnly reply by one line.\n1.If a support request is created, just reply by saying \"Support Request Created\".\n2.If a demo request is created, just reply by saying \"Demo Request Created\".\n3.If a spam request is created, just reply by saying \"Added message to spam\".\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -288,
+        -96
+      ],
+      "id": "1f637002-5bc8-495c-86b3-049a3aba4182",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        96
+      ],
+      "id": "09cd8132-488f-4d5a-ba48-87bf47cda199",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "83gCmz5a58DdQZtI",
+          "name": "Ritu OpenAI Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mvlm1qIbfjR-1Xa5hCm-nB6ULSNotHlHNJ2E3HZF3SM",
+          "mode": "list",
+          "cachedResultName": "SupportSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mvlm1qIbfjR-1Xa5hCm-nB6ULSNotHlHNJ2E3HZF3SM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mvlm1qIbfjR-1Xa5hCm-nB6ULSNotHlHNJ2E3HZF3SM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Username', ``, 'string') }}",
+            "User email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('User_email', ``, 'string') }}",
+            "Issue title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_title', ``, 'string') }}",
+            "Issue description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_description', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User email",
+              "displayName": "User email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issue title",
+              "displayName": "Issue title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issue description",
+              "displayName": "Issue description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        80
+      ],
+      "id": "ac07cde9-3d6d-4866-a6ef-139ea23b6856",
+      "name": "Support Request Tool",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1cwEh-ptNqH67brV8w4XFStSegNGAcSpM8DtPxRRU2U4",
+          "mode": "list",
+          "cachedResultName": "DemoSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cwEh-ptNqH67brV8w4XFStSegNGAcSpM8DtPxRRU2U4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cwEh-ptNqH67brV8w4XFStSegNGAcSpM8DtPxRRU2U4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Username', ``, 'string') }}",
+            "User email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('User_email', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User email",
+              "displayName": "User email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -144,
+        112
+      ],
+      "id": "9a85e011-6900-4542-a728-32b0e757f70e",
+      "name": "Demo Tool",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11n-rZLddFNoWrL9FPPIPNr6OhrDgVcKio0ji_rVOAH4",
+          "mode": "list",
+          "cachedResultName": "SpamSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11n-rZLddFNoWrL9FPPIPNr6OhrDgVcKio0ji_rVOAH4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11n-rZLddFNoWrL9FPPIPNr6OhrDgVcKio0ji_rVOAH4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Message content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_content', ``, 'string') }}",
+            "Reason for Spam": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Reason_for_Spam', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message content",
+              "displayName": "Message content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reason for Spam",
+              "displayName": "Reason for Spam",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        96
+      ],
+      "id": "745559b4-bd5f-4a04-be77-8e270f6149f4",
+      "name": "Spam Tool",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -288,
+        112
+      ],
+      "id": "45c138f0-9755-453e-abf3-1dadb1004ac8",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat Input": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Request Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Demo Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spam Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "38a66c08-56f7-4140-8d68-cb4e3f3efb6c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1955ce671464df0ed7cfdca71d342b98cbc55d5e11f8ba4b1aef8f38e780e1f9"
+  },
+  "nodeGroups": [],
+  "id": "gsfze5NZNxXSNxS8",
+  "tags": []
+}

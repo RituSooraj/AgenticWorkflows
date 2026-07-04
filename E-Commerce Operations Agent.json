@@ -1,0 +1,497 @@
+{
+  "name": "E-Commerce Operations Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -256,
+        288
+      ],
+      "id": "8ed86933-0143-4de1-ab8f-d30c7892e1d3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "83gCmz5a58DdQZtI",
+          "name": "Ritu OpenAI Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yq5QKr63bKStAn6pMlSFtfwemAB6LQ62FFsFQAwkR3c",
+          "mode": "list",
+          "cachedResultName": "Baseline Metrics Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yq5QKr63bKStAn6pMlSFtfwemAB6LQ62FFsFQAwkR3c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yq5QKr63bKStAn6pMlSFtfwemAB6LQ62FFsFQAwkR3c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -16,
+        240
+      ],
+      "id": "4c5c389e-a544-4369-91ba-031b28c724fc",
+      "name": "Baseline Metrics Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1AsKGKwjPK6-3V2GjG3X3n5sKI9Z9M265CmfKpYUe6qA",
+          "mode": "list",
+          "cachedResultName": "Agent Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AsKGKwjPK6-3V2GjG3X3n5sKI9Z9M265CmfKpYUe6qA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AsKGKwjPK6-3V2GjG3X3n5sKI9Z9M265CmfKpYUe6qA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "command_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('command_id', ``, 'string') }}",
+            "action": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('action', ``, 'string') }}",
+            "reason": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('reason', ``, 'string') }}",
+            "checkout_step": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('checkout_step', ``, 'string') }}",
+            "cart_value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cart_value', ``, 'string') }}",
+            "device": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('device', ``, 'string') }}",
+            "baseline_rate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('baseline_rate', ``, 'string') }}",
+            "timestamp": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('timestamp', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "command_id",
+              "displayName": "command_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "checkout_step",
+              "displayName": "checkout_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cart_value",
+              "displayName": "cart_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "device",
+              "displayName": "device",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "baseline_rate",
+              "displayName": "baseline_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        224
+      ],
+      "id": "853e3cb3-8808-491e-b265-90de4714bb49",
+      "name": "Agent Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        -304
+      ],
+      "id": "e66eb081-f546-4a26-858b-ca5e5163097e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro",
+          "mode": "list",
+          "cachedResultName": "State Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -688,
+        -304
+      ],
+      "id": "4f8a2a70-24ce-4d54-88a2-b1edcd2d5ce2",
+      "name": "Read State",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KTy2lKfT2VboRz1s-J-gplshPwVzPMynDqAHPNVuSj8",
+          "mode": "list",
+          "cachedResultName": "Cart Events Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KTy2lKfT2VboRz1s-J-gplshPwVzPMynDqAHPNVuSj8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KTy2lKfT2VboRz1s-J-gplshPwVzPMynDqAHPNVuSj8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        -304
+      ],
+      "id": "472d978c-c962-4413-b039-442b910f9111",
+      "name": "Read All Cart Events Failures",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3ce288c1-7fab-4b0b-9322-f4337035d0e1",
+              "leftValue": "={{ $json.timestamp }}",
+              "rightValue": "={{ $('Read State').item.json.value }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -256,
+        -304
+      ],
+      "id": "d3bbca64-5563-4494-b019-6ac4695145ca",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an analyst looking at checkout data to see if there is an issue with our check out solution. Each cart event below represents a checkout failure at the \\\"checkout_step\\\", which can be PAYMENT, ADDRESS, or SHIPPING.\n\nFirst calculate the failure rate per checkout_step by counting how many rows per type of checkout_step, which can only be PAYMENT, ADDRESS, and SHIPPING. This is the failure rate for that checkout_step. Use the cart events that you have access to.\n\nSecond, evaluate each cart events below based on the following business rules using the appropriate tools to get the baseline metrics and any other information you need. \n\n\nSeverity High: If the issue occurs during the PAYMENT step (critical revenue impact).\nSeverity High: If the cart_value is more than 5000.\nSeverity High: If the failure rate exceeds the baseline_rate.\nSeverity High: If multiple mobile failures occur (potential app bug).\n\n## Cart Events\n{{ $input.all().map(i => i.json).toJsonString() }}\n\nTake the following action by updating the Action sheet using the appropriate tool.\n\nAction:\nALERT: If severity is HIGH.\nLOG: If severity is LOW (e.g., low value, isolated incident).\n\nFor adding into Agent sheet, generate the command_id as =\"cmd-<6_random_alphanumeric>\" and make it unique \n\nWrite exactly one row for each cart event to the Action sheet. Then update the state sheet with the last processed timestamp. The state sheet should only have one row.\n\nFinally, post a JSON payload, provide all 9 fields:command_id, action, severity, reason, checkout_step, cart_value, device, baseline_rate, timestamp.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -48,
+        -304
+      ],
+      "id": "75cb7344-0f0b-4acb-8c99-b3b1b9f0ad01",
+      "name": "Checkout Incident Agent"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro",
+          "mode": "list",
+          "cachedResultName": "State Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12iCwnBUZyh4qUErM55KRWw8jI-eVVLMUvXjgUCJxuro/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key": "last_processed_timestamp",
+            "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('value', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "key"
+          ],
+          "schema": [
+            {
+              "id": "key",
+              "displayName": "key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "value",
+              "displayName": "value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        144,
+        80
+      ],
+      "id": "12a3a420-cd1f-41d3-bdb9-526406411b4a",
+      "name": "Update the State Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5hT7z82NFi4zT7qx",
+          "name": "Ritu Google Accout"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Checkout Incident Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baseline Metrics Sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "Checkout Incident Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "Checkout Incident Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read State": {
+      "main": [
+        [
+          {
+            "node": "Read All Cart Events Failures",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All Cart Events Failures": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Checkout Incident Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update the State Sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "Checkout Incident Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2d061549-354a-4215-aabb-31e1b50b21a0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1955ce671464df0ed7cfdca71d342b98cbc55d5e11f8ba4b1aef8f38e780e1f9"
+  },
+  "nodeGroups": [],
+  "id": "1cyitFmadRCc7C8C",
+  "tags": []
+}
