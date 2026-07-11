@@ -1,0 +1,261 @@
+{
+  "name": "HealthCare Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -224,
+        -96
+      ],
+      "id": "25c2b519-8706-4590-abaa-2d25a588f4c2",
+      "name": "When chat message received",
+      "webhookId": "820c5b59-8ade-4cba-b194-9aae16e15d09"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        32,
+        -96
+      ],
+      "id": "0df80b0a-dfa9-405c-b2e7-893969b1d132",
+      "name": "Coordinator"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        112
+      ],
+      "id": "31687d7c-6d10-4c97-9f6b-b36f34749ccd",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "l6rO6JWGfbCiIEsm",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        48,
+        112
+      ],
+      "id": "77ad7960-7540-4fa5-ac0f-79fb26f89ca0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "NaSrWRtRjWsZoLC3",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/NaSrWRtRjWsZoLC3",
+          "cachedResultName": "Doctor Booking Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        192
+      ],
+      "id": "ef3b9f7b-a510-4616-bc2d-3e62ac372798",
+      "name": "Doctor Booking Agent"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "S1IeWuNTQNSKURu9",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/S1IeWuNTQNSKURu9",
+          "cachedResultName": "Hospital Comparison Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        208
+      ],
+      "id": "7f2146c0-fb0c-4290-9623-56e087b55836",
+      "name": "Hospital Comparison Agent"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "RFuC3Q5QLF344ZeC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/RFuC3Q5QLF344ZeC",
+          "cachedResultName": "Diagnostics Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        176
+      ],
+      "id": "cb798f5b-ad2a-4824-966a-141d987028a6",
+      "name": "Diagnostic Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Doctor Booking Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hospital Comparison Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Diagnostic Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d7e739d1-666d-4a04-baac-2db5fe242054",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8c8201cb0dc83b4713a4dd42454ec696b963b61f56691c5da1d3d62640d43aca"
+  },
+  "nodeGroups": [],
+  "id": "30FICjNhsqZ6FAkr",
+  "tags": []
+}
