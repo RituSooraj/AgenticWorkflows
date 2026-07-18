@@ -1,0 +1,19 @@
+{
+  "name": "currency-cli",
+  "version": "1.0.0",
+  "description": "Tiny currency conversion CLI used as the project for the Claude Code workshop",
+  "private": true,
+  "main": "src/cli.js",
+  "bin": {
+    "currency": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/cli.js",
+    "mcp": "node mcp-server/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "commander": "^12.1.0"
+  }
+}
