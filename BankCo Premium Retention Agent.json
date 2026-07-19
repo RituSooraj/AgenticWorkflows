@@ -1,0 +1,244 @@
+{
+  "name": "BankCo Premium Retention Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "15T2ZHMnd4AwISxu1lcCm9RzA3m_Z4NvdbzJysvpzZ5I",
+          "mode": ""
+        },
+        "sheetName": "Customer Data",
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "6e31d700-030c-4839-9728-8528f3418a17",
+      "name": "Customer Data Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        144
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Qm1aGHw9oSD9KClH",
+          "name": "Google Sheets Trigger account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -496,
+        368
+      ],
+      "id": "4e4290b6-81bf-4b54-a1a1-c28e2e489003",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are BankCo's Premium Retention Assistant.\n\nFollow STRICT rules:\n1. Process only if renewal window is between 30–90 days.\n2. Identify risk signals exactly as defined.\n3. If at-risk, select LOW cost offer if eligible.\n4. Generate RM-ready email.\n5. Use tools to log and notify.\n\nCustomer Data:\n{{JSON.stringify($json)}}\n\nAfter processing, use appropriate tools.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -384,
+        144
+      ],
+      "id": "d46b9038-7ee3-47e7-9f5b-7f13071bda41",
+      "name": "Retention AI Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15T2ZHMnd4AwISxu1lcCm9RzA3m_Z4NvdbzJysvpzZ5I",
+          "mode": ""
+        },
+        "sheetName": "Relationship Managers (RMs)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4,
+      "position": [
+        -368,
+        368
+      ],
+      "id": "0e9849e1-c887-46ae-86b2-8d0f5aa30230",
+      "name": "Read RMs",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lvwThqTOTXu8sitC",
+          "name": "Samwels Gsheets Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15T2ZHMnd4AwISxu1lcCm9RzA3m_Z4NvdbzJysvpzZ5I",
+          "mode": ""
+        },
+        "sheetName": "Offer Policy",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4,
+      "position": [
+        -240,
+        368
+      ],
+      "id": "4f177f64-f8da-4185-a123-7b9ab13231bc",
+      "name": "Read Offer Policy",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lvwThqTOTXu8sitC",
+          "name": "Samwels Gsheets Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "15T2ZHMnd4AwISxu1lcCm9RzA3m_Z4NvdbzJysvpzZ5I",
+          "mode": ""
+        },
+        "sheetName": "Retention Recommendation",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_date": "={{$now}}",
+            "cust_id": "={{$fromAI('cust_id')}}",
+            "rm_id": "={{$fromAI('rm_id')}}",
+            "renewal_window_days": "={{$fromAI('renewal_window_days')}}",
+            "risk_reason_1": "={{$fromAI('risk_reason_1')}}",
+            "risk_reason_2": "={{$fromAI('risk_reason_2')}}",
+            "risk_reason_3": "={{$fromAI('risk_reason_3')}}",
+            "recommended_offer_id": "={{$fromAI('recommended_offer_id')}}",
+            "recommended_email_message": "={{$fromAI('recommended_email_message')}}",
+            "message_sent": "No",
+            "message_sent_date": "",
+            "sent_email_message": ""
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4,
+      "position": [
+        -112,
+        368
+      ],
+      "id": "b3831d39-b887-4b04-baf3-41087c4cd80a",
+      "name": "Write Retention Recommendation",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lvwThqTOTXu8sitC",
+          "name": "Samwels Gsheets Key"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        480
+      ],
+      "id": "d896cb3b-304e-4ef3-ae02-3476bc755dc4",
+      "name": "Notify RM via Gmail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Customer Data Trigger": {
+      "main": [
+        [
+          {
+            "node": "Retention AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Retention AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read RMs": {
+      "ai_tool": [
+        [
+          {
+            "node": "Retention AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Offer Policy": {
+      "ai_tool": [
+        [
+          {
+            "node": "Retention AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Retention Recommendation": {
+      "ai_tool": [
+        [
+          {
+            "node": "Retention AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "70a22bb1-64bf-4328-b955-50f7ace103e4",
+  "meta": {
+    "instanceId": "f8915628d001c9f12c477501d438b0ef663b51074cad39b3fe2c37a0f1ebd929"
+  },
+  "id": "qIGCmNvMqAtUaACu",
+  "tags": []
+}

@@ -1,0 +1,361 @@
+{
+  "name": "Finance Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "ef22fb71-d222-4971-b16c-eb3675e9de06",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a senior finance & strategy analyst writing for NovaCart executives.\nYou MUST\n- Use BOTH tools at least once: (1) Internal Finance Vector Store Tool and (2) External Market Reports Vector Store Tool.\n- Ground all key claims in retrieved evidence.\n- If evidence is insufficient for a claim, say so explicitly.\nOutput requirements:\n- Return a SINGLE HTML string only (no Markdown, no code fences).\n- Use simple inline CSS for email readability.\\n- Structure the report with these sections:\n  1) Title + reporting period\n  2) Executive Summary (3–6 bullets)\n  3) KPI Dashboard (table)\n  4) Performance Deep Dive (by product/category and any available dimensions)\n  5) Market Context (external trends)\n  6) Drivers & Correlations (internal vs external)\n  7) Risks, Opportunities, Recommendations (bullets)\n  8) Sources (list the retrieved sources with file_name and drive_url when available)\nWhen citing, include the source in parentheses, e.g. (Source: <file_name> <drive_url>).",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        176,
+        0
+      ],
+      "id": "3a2e17b2-afe5-4b36-bdc8-f9dc1a65b614",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a formatter agent, that formats the  {{ $json.output }} into HTML to make it look beautiful and presentable."
+            }
+          ]
+        },
+        "simplify": false,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        0
+      ],
+      "id": "29dcdd51-15eb-45d8-9d70-5a15d0c3aa68",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "l6rO6JWGfbCiIEsm",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to retrieve insights from EXTERNAL market reports eg industry trends, reports, competitor moves etc",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "externalragritu",
+          "mode": "list",
+          "cachedResultName": "externalragritu"
+        },
+        "topK": 10,
+        "useReranker": true,
+        "options": {
+          "pineconeNamespace": "prod"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        304
+      ],
+      "id": "3a92364c-2ca7-4a21-b03c-ead929932311",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "xTBUZswVkqZRsoLt",
+          "name": "Pinecone account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "projectrag",
+          "mode": "list",
+          "cachedResultName": "projectrag"
+        },
+        "topK": 10,
+        "useReranker": true,
+        "options": {
+          "pineconeNamespace": "prod"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        288
+      ],
+      "id": "415339fc-502f-4ec0-8aa6-90eb8c506288",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "xTBUZswVkqZRsoLt",
+          "name": "Pinecone account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        208
+      ],
+      "id": "ce74e09e-32a2-4f72-bc43-cddcf45a830d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "l6rO6JWGfbCiIEsm",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "ritubabuk@gmail.com",
+        "subject": "Monthly Report ",
+        "message": "={{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "6b836849-7568-4ca5-945e-a373a86cb867",
+      "name": "Send a message",
+      "webhookId": "fef0da63-502f-4dfb-8856-99cecf9183c7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "d6d20bunxzn8wD9O",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {
+          "dimensions": 1024
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        496
+      ],
+      "id": "5de39127-4f5a-449d-a66f-2fcd296f3ee3",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "l6rO6JWGfbCiIEsm",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topN": 5
+      },
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        48,
+        496
+      ],
+      "id": "8d5a77dc-fcec-4322-b19b-6fade9343587",
+      "name": "Reranker Cohere",
+      "credentials": {
+        "cohereApi": {
+          "id": "1xf9cF4NFYFc3Wy5",
+          "name": "Cohere account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topN": 5
+      },
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        544,
+        512
+      ],
+      "id": "e8add92e-ccc7-48d7-8e68-e3b7ebf7ecde",
+      "name": "Reranker Cohere1",
+      "credentials": {
+        "cohereApi": {
+          "id": "1xf9cF4NFYFc3Wy5",
+          "name": "Cohere account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere1": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "02190ef5-01c9-4014-813d-e422527161c6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8c8201cb0dc83b4713a4dd42454ec696b963b61f56691c5da1d3d62640d43aca"
+  },
+  "nodeGroups": [],
+  "id": "VkFISJFT5Y7ydgDY",
+  "tags": []
+}

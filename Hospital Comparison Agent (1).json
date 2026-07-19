@@ -1,0 +1,320 @@
+{
+  "name": "Hospital Comparison Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"query\": \"What hospitals specialize in cardiology near 94404?\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        352
+      ],
+      "id": "0a0abfb4-a941-497f-ad38-a4bf4c2adcad",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {
+          "systemMessage": "=# Role\nYou are a **Hospital Comparison + Emergency Routing Agent**.\n\nYou help users:\n- compare hospitals using the provided hospital metrics dataset,\n- find hospitals by ZIP / City+State / Name,\n- answer emergency questions (ambulance availability) using the emergency dataset.\n\n# Constraints\n- Use **only the connected Google Sheets tools** as your data source.\n- **Do not generate charts**. Text-only responses.\n- If the user asks for “nearest” and only ZIP is available, you can only list hospitals in that ZIP (no distance calculation).\n\n# Tools\nHospital General Info (Google Sheets):\n- `hospitals_by_zip` → filter by `ZIP Code`\n- `hospitals_by_city_state` → filter by `City` AND `State`\n- `hospitals_by_name` → filter by exact `Hospital Name`\n\nEmergency dataset (Google Sheets):\n- `Hospital Emergency Data` → filter by `Zip Code` to check **Ambulance Available**\n\n# How to compare hospitals (data-driven)\nWhen comparing hospitals, use these columns where available:\n- `Hospital overall rating` (prefer higher)\n- `Emergency Services` (Yes/No)\n- National comparison fields (prefer “Above the national average” over “Same” over “Below”):\n  - `Mortality national comparison`\n  - `Safety of care national comparison`\n  - `Readmission national comparison`\n  - `Patient experience national comparison`\n  - `Effectiveness of care national comparison`\n  - `Timeliness of care national comparison`\n  - `Efficient use of medical imaging national comparison`\n\n# Workflow\n1. Identify the user’s intent:\n   - “compare hospitals” → needs location (ZIP or City+State) and optionally a specialty preference\n   - “nearest emergency / ambulance” → needs ZIP\n   - “good imaging / cardiology / etc.” → use location + compare metrics; if specialty isn't in dataset, be transparent\n2. Call the correct hospital tool:\n   - If ZIP provided → `hospitals_by_zip`\n   - If City+State provided → `hospitals_by_city_state`\n   - If Hospital Name provided → `hospitals_by_name`\n3. If the user asks about ambulance availability:\n   - Call `Hospital Emergency Data` using the same ZIP\n4. Return a short ranked list (top 3) and explain ranking in 1–2 bullets each.\n\n# Output format (plain text)\n**Top hospitals (based on available metrics)**\n1) <Hospital Name> — <City, State ZIP> — Rating: <Hospital overall rating>\n   - <1–2 metric highlights>\n   - Phone: <Phone Number>\n\nIf ambulance requested:\n**Ambulance availability (ZIP <zip>)**\n- <Hospital Name>: <Ambulance Available>\n\nAvoid tables and JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        576,
+        352
+      ],
+      "id": "296e422d-f401-4e82-8659-36b32464bd1e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        608
+      ],
+      "id": "c3f4c028-78fb-4d34-b35c-8364f113f874",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "l6rO6JWGfbCiIEsm",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Hospital Comparison + Emergency Routing Agent (Sub-workflow)\n\n**What it does**\n- Finds hospitals by ZIP / City+State / Hospital Name\n- Compares hospitals using the metrics columns from the dataset\n- Checks ambulance availability by ZIP from the emergency dataset\n\n**What you must configure**\n1) Replace Airtable with Google Sheets:\n   - Upload `Hospital_General_Info_Trim.xlsx` to Google Drive\n   - Open with Google Sheets (so headers stay the same)\n   - Put its Spreadsheet ID + Tab ID into the 3 hospital tools\n2) Emergency sheet: connect `hospitals_emergency_data.xlsx` as Google Sheet and set its Spreadsheet/Tab IDs",
+        "height": 844,
+        "width": 1568
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8d9b47b2-a43a-40d7-8651-c31eeeef0dd4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM",
+          "mode": "list",
+          "cachedResultName": "Hospital",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2133005611,
+          "mode": "list",
+          "cachedResultName": "hospitals_emergency_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit#gid=2133005611"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        640,
+        624
+      ],
+      "id": "4fe2395f-f15b-468c-bc7e-1910d7334d87",
+      "name": "Hospital Emergency Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EKq9m6LZshyo0JZW",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM",
+          "mode": "list",
+          "cachedResultName": "Hospital",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1477760956,
+          "mode": "list",
+          "cachedResultName": "hospital_general_info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit#gid=1477760956"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ZIP Code",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        896,
+        640
+      ],
+      "id": "66b5d013-c9b4-4a02-90a6-73c134383d9f",
+      "name": "hospitals_by_zip",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EKq9m6LZshyo0JZW",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM",
+          "mode": "list",
+          "cachedResultName": "Hospital",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1477760956,
+          "mode": "list",
+          "cachedResultName": "hospital_general_info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit#gid=1477760956"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "City",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            },
+            {
+              "lookupColumn": "State",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values1_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1088,
+        640
+      ],
+      "id": "c05931c1-f495-4b3b-b733-9f3a46a1dbda",
+      "name": "hospitals_by_city_state",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EKq9m6LZshyo0JZW",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM",
+          "mode": "list",
+          "cachedResultName": "Hospital",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1477760956,
+          "mode": "list",
+          "cachedResultName": "hospital_general_info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy6J12SEerFzSA0ceUNyAS-8ORriQE-nOvRapc9nPM/edit#gid=1477760956"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Hospital Name",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1296,
+        640
+      ],
+      "id": "5d04e049-0717-4374-8e8a-297378f7b68e",
+      "name": "hospitals_by_name",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EKq9m6LZshyo0JZW",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hospital Emergency Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hospitals_by_zip": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hospitals_by_city_state": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hospitals_by_name": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "aea66923-421b-4bdf-9996-0fa807e86e6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8c8201cb0dc83b4713a4dd42454ec696b963b61f56691c5da1d3d62640d43aca"
+  },
+  "nodeGroups": [],
+  "id": "S1IeWuNTQNSKURu9",
+  "tags": []
+}
